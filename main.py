@@ -1,16 +1,23 @@
+from flask import Flask, request
 import telebot
+
 bot = telebot.TeleBot('1835876628:AAGmblR_mTmz-p-7QpB7g-QRehHaYFpN3Ig')
-
-@bot.message_handler(commands=['start', 'help'])
-def send_welcome(message):
-    bot.reply_to(message, f'Я бот. Приятно познакомиться, {message.from_user.first_name}')
-
-@bot.message_handler(content_types=['text'])
-def get_text_messages(message):
-    if message.text.lower() == 'привет':
-        bot.send_message(message.from_user.id, 'Привет!')
-    else:
-        bot.send_message(message.from_user.id, 'Не понимаю, что это значит.')
+bot.set_webhook(url="https://andreewtelegabot.herokuapp.com/")
+app = Flask(__name__)
 
 
-bot.polling(none_stop=True)
+@app.route('/', methods=["POST"])
+def webhook():
+    bot.process_new_updates(
+        [telebot.types.Update.de_json(request.stream.read().decode("utf-8"))]
+    )
+    return "ok"
+
+
+@bot.message_handler(commands=['start'])
+def start_command(message):
+    bot.send_message(message.chat.id, 'Hello!')
+
+
+if __name__ == "__main__":
+    app.run()
