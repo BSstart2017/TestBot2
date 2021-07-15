@@ -16,8 +16,10 @@ dp.middleware.setup(LoggingMiddleware())
 @dp.message_handler(commands="start")
 async def echo(message: types.Message):
     logging.warning(f'Recieved a message from {message.from_user}')
-    await message.answer("Это простой ответ")
-
+    await message.answer("Введите логин")
+    if message.text == "Привет": bot.send_message(message.from_user.id, "Привет, сейчас я расскажу тебе гороскоп на сегодня.") 
+    elif message.text == "/start": bot.send_message(message.from_user.id, "Напиши Привет") 
+    else: bot.send_message(message.from_user.id, "Я тебя не понимаю. Напиши /start.")
 
 async def on_startup(dp):
     logging.warning(
