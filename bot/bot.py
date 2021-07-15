@@ -13,10 +13,10 @@ dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
 
-@dp.message_handler()
+@dp.message_handler(commands="start")
 async def echo(message: types.Message):
     logging.warning(f'Recieved a message from {message.from_user}')
-    await bot.send_message(message.chat.id, 'testing')
+    await message.answer("Это простой ответ")
 
 
 async def on_startup(dp):
