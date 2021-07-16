@@ -5,6 +5,7 @@ def set_hook():
     import asyncio
     from bot.settings import HEROKU_APP_NAME, WEBHOOK_URL, BOT_TOKEN
     from aiogram import Bot
+    from flask_sslify import SSLify
     bot = Bot(token=BOT_TOKEN)
 
     async def hook_set():
@@ -15,7 +16,8 @@ def set_hook():
         print(await bot.get_webhook_info())
     
 
-    asyncio.run(hook_set())
+    
+    ssLify = SSLify(asyncio.run(hook_set())) 
     bot.close()
 
 

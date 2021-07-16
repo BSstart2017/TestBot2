@@ -18,11 +18,12 @@ async def echoStart(message: types.Message):
     global botlog
     botlog = 'Введите логин:'
 
-@dp.message_handler(botlog='Введите логин:')
+@dp.message_handler()
 async def echoLogin(message: types.Message):
-    global loginUser
-    loginUser = message.text
-    await message.answer("Введите пароль:")
+    if botlog == 'Введите логин:':
+        global loginUser
+        loginUser = message.text
+        await message.answer("Введите пароль:")
         
 
 @dp.message_handler()
