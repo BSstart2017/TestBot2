@@ -27,6 +27,12 @@ async def echo(message: types.Message):
         loginUser = message.text
         await message.answer("Введите пароль:")
         
+def new_func(botlog):
+    if botlog == 'Введите логин:':       
+        botlog = 'Введите пароль:'
+    return botlog
+
+botlog = new_func(botlog)
 
 @dp.message_handler()
 async def echo(message: types.Message):
