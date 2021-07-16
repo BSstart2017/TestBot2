@@ -11,21 +11,19 @@ from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
+bottext = ''
 
+@dp.message_handler(commands="start")
+async def echo(message: types.Message):
+    logging.warning(f'Recieved a message from {message.from_user}')
+    await message.answer("Введите логин:")
+    bottext = 'Введите логин:'
 
 @dp.message_handler()
 async def echo(message: types.Message):
     logging.warning(f'Recieved a message from {message.from_user}')
-    if message.text == "Привет": 
-        bot.send_message(message.from_user.id, "Привет, сейчас я расскажу тебе гороскоп на сегодня.") 
-    elif message.text == "/start": 
-        await message.answer("Введите логин")
-        if message.text == "da":
-            await message.answer("Ураааааааа")
-        else:
-            await message.answer("хуй")
-    else: 
-        bot.send_message(message.from_user.id, "Я тебя не понимаю. Напиши /start.")
+    if bottext == 'Введите логин:':
+        await message.answer("Введите пароль:")
 
 async def on_startup(dp):
     logging.warning(
