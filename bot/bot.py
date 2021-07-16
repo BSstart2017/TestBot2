@@ -22,7 +22,6 @@ async def echo(message: types.Message):
 @dp.message_handler()
 async def echo(message: types.Message):
     logging.warning(f'Recieved a message from {message.from_user}')
-    await message.answer(bottext)
     if bottext == 'Введите логин:':
         await message.answer("Введите пароль:")
 
