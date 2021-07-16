@@ -13,30 +13,21 @@ dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
 @dp.message_handler(commands="start")
-async def echo(message: types.Message):
-    logging.warning(f'Recieved a message from {message.from_user}')
+async def echoStart(message: types.Message):
     await message.answer("Введите логин:")
     global botlog
     botlog = 'Введите логин:'
 
 @dp.message_handler()
-async def echo(message: types.Message):
-    logging.warning(f'Recieved a message from {message.from_user}')
+async def echoLogin(message: types.Message):
     if botlog == 'Введите логин:':
         global loginUser
         loginUser = message.text
         await message.answer("Введите пароль:")
         
-def new_func(botlog):
-    if botlog == 'Введите логин:':       
-        botlog = 'Введите пароль:'
-    return botlog
-
-botlog = new_func(botlog)
 
 @dp.message_handler()
-async def echo(message: types.Message):
-    logging.warning(f'Recieved a message from {message.from_user}')
+async def echoPass(message: types.Message):
     if botlog == 'Введите пароль:':
         global loginPass
         loginPass = message.text
