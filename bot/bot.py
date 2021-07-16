@@ -26,6 +26,8 @@ async def echo(message: types.Message):
         global loginUser
         loginUser = message.text
         await message.answer("Введите пароль:")
+        global botlog
+        botlog = 'Введите пароль:'
 
 @dp.message_handler()
 async def echo(message: types.Message):
@@ -36,6 +38,7 @@ async def echo(message: types.Message):
         await message.answer("Пароль:" + loginPass)
         await message.answer("Успех")
         
+
 async def on_startup(dp):
     logging.warning(
         'Starting connection. ')
