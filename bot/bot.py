@@ -11,8 +11,6 @@ from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
-botlog = ''
-botpass = ''
 
 @dp.message_handler(commands="start")
 async def echo(message: types.Message):
@@ -25,6 +23,8 @@ async def echo(message: types.Message):
 async def echo(message: types.Message):
     logging.warning(f'Recieved a message from {message.from_user}')
     if botlog == 'Введите логин:':
+        global botlog
+        botlog = ''
         global loginUser
         loginUser = message.text
         await message.answer("Введите пароль:")
@@ -39,6 +39,8 @@ async def echo(message: types.Message):
         loginPass = message.text
         await message.answer("Пароль:" + loginPass)
         await message.answer("Успех")
+        global botpass
+        botpass = ''
 
 async def on_startup(dp):
     logging.warning(
