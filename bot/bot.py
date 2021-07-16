@@ -16,14 +16,28 @@ dp.middleware.setup(LoggingMiddleware())
 async def echo(message: types.Message):
     logging.warning(f'Recieved a message from {message.from_user}')
     await message.answer("Введите логин:")
-    global bottext
-    bottext = 'Введите логин:'
+    global botlog
+    botlog = 'Введите логин:'
 
 @dp.message_handler()
 async def echo(message: types.Message):
     logging.warning(f'Recieved a message from {message.from_user}')
-    if bottext == 'Введите логин:':
+    if botlog == 'Введите логин:':
+        global loginUser
+        loginUser = message.text
+        await message.answer("Логин:" + loginUser)
         await message.answer("Введите пароль:")
+        global botpass
+        botpass = 'Введите пароль:'
+
+@dp.message_handler()
+async def echo(message: types.Message):
+    logging.warning(f'Recieved a message from {message.from_user}')
+    if botpass == 'Введите пароль:':
+        global loginPass
+        loginPass = message.text
+        await message.answer("Пароль:" + loginPass)
+        await message.answer("Успех")
 
 async def on_startup(dp):
     logging.warning(
