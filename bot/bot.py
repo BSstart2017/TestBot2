@@ -7,13 +7,12 @@ from aiogram.utils.executor import start_webhook
 from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
                           WEBHOOK_URL, WEBHOOK_PATH,
                           WEBAPP_HOST, WEBAPP_PORT)
-import os
+
 import psycopg2
-
-DATABASE_URL = os.environ['postgres://soxrigiqvchsmn:535a584a9a46fa70752593b7f9ec8a7927c6f377515fbb2f87f0fc52c1bb3fb7@ec2-23-20-124-77.compute-1.amazonaws.com:5432/dd93h7g3uedrn1']
-
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+conn = psycopg2.connect(dbname='dd93h7g3uedrn1', user='soxrigiqvchsmn', password='535a584a9a46fa70752593b7f9ec8a7927c6f377515fbb2f87f0fc52c1bb3fb7', host='ec2-23-20-124-77.compute-1.amazonaws.com')
 cur = conn.cursor()
+
+cur.execute("SELECT email FROM salesforce.contact;")
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -22,7 +21,7 @@ dp.middleware.setup(LoggingMiddleware())
 @dp.message_handler(commands="start")
 async def echoStart(message: types.Message):
     await message.answer("Введите логин:")
-    await message.answer(cur)
+    await message.answer(cur.fetchone())
     global botlog
     botlog = 'Введите логин:'
 
