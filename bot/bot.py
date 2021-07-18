@@ -21,6 +21,7 @@ dp.middleware.setup(LoggingMiddleware())
 @dp.message_handler(commands="start")
 async def echoStart(message: types.Message):
     await message.answer("Введите логин:")
+    await message.answer(cur.fetchone())
     global botlog
     botlog = 'Введите логин:'
 
