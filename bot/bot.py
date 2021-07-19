@@ -198,4 +198,3 @@ def main():
         port=WEBAPP_PORT,
     )
 
-conn.close()
