@@ -13,7 +13,7 @@ from datetime import datetime
 import keyboards as kb
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 
-bot = Bot(token=BOT_TOKEN)
+bot = Bot(token='1922572917:AAGqIJVEIdVbMee2xfT941sOPjkQCGTYy54')
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
