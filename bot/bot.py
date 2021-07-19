@@ -1,5 +1,5 @@
 import logging
-
+from datetime import datetime
 from aiogram import Bot, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.dispatcher import Dispatcher
@@ -77,6 +77,44 @@ async def echoLogin(message: types.Message):
             else:
                 await message.answer("Логин или пароль неверны!")
                 botlog[0] = 0
+    elif botlog[0] == 4:
+        try:
+            if datetime.strptime(message.text, "%Y-%m-%d") <= datetime.now():
+                global cardData
+                cardData = datetime.strptime(message.text, "%Y-%m-%d")
+                await message.answer('Введите сумму затрат: ')
+                botlog[0] = 5
+            else: 
+                await message.answer('Введите дату не больше : ' + str(datetime.now().strptime("%Y-%m-%d")))
+        except ValueError:
+            await message.answer('Неправильный ввод даты. Введите дату в формате 2000-05-24')
+    elif botlog[0] == 5:
+        try:
+            int(message.text)
+            global cardAmount
+            cardAmount = message.text
+            await message.answer("Введите описание затрат!")
+            botlog[0] = 6
+        except ValueError:
+            await message.answer("Неправильный ввод. Введите сумму!")
+    elif botlog[0] == 6:
+        try:
+            global cardDisc
+            cardDisc = message.text
+            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
+                card.execute("SELECT * FROM salesforce.expense_card__c;")
+                cardLenDo = len(card.fetchall())
+         #   with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
+         #       card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c) values (%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc)))
+            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
+                card.execute("SELECT * FROM salesforce.expense_card__c;")
+                cardLenPo = len(card.fetchall())
+            if cardLenDo < cardLenPo:
+                await message.answer("Карточка создана!")
+                botlog[0] = 0
+        except ValueError:
+            await message.answer("Ошибка при создании карты!")
+            botlog[0] = 0
 
 
 
