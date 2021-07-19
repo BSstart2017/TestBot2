@@ -44,20 +44,20 @@ async def echoStart(message: types.Message):
 @dp.message_handler()
 async def echoLogin(message: types.Message):
     if botlog[0] == 1:
-  ##      with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as contact:
-   ##         contact.execute(("SELECT * FROM salesforce.contact where email='{}';").format(message.text))
-         ##   if len(contact.fetchall()) == 1:
-        ##        if len(botlog) == 1:
-          ##          botlog.append(1)
-       ##         else:
-         ##           botlog[1] = 1
-         ##   else:
-         ##       if len(botlog) == 1:
-         ##           botlog.append(0)
-         ##       else:
-        ##            botlog[1] = 0
-      ##  await message.answer("Введите пароль:")
-       botlog[0] = 2
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as contact:
+            contact.execute(("SELECT * FROM salesforce.contact where email='{}';").format(message.text))
+            if len(contact.fetchall()) == 1:
+                if len(botlog) == 1:
+                    botlog.append(1)
+                else:
+                    botlog[1] = 1
+            else:
+                if len(botlog) == 1:
+                    botlog.append(0)
+                else:
+                    botlog[1] = 0
+        await message.answer("Введите пароль:")
+        botlog[0] = 2
     elif botlog[0] == 2:
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as contact:
             contact.execute(("SELECT * FROM salesforce.contact where password__c='{}';").format(message.text))
