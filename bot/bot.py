@@ -10,6 +10,7 @@ from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
 import psycopg2
 import psycopg2.extras
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 
 
 inline_btn_1 = InlineKeyboardButton('Текущий баланс', callback_data='button1')
@@ -28,6 +29,8 @@ dp.middleware.setup(LoggingMiddleware())
 conn = psycopg2.connect(dbname='dd93h7g3uedrn1', user='soxrigiqvchsmn', password='535a584a9a46fa70752593b7f9ec8a7927c6f377515fbb2f87f0fc52c1bb3fb7', host='ec2-23-20-124-77.compute-1.amazonaws.com')
 
 botlog = []
+userId = ''
+cardAmount = ''
 
 @dp.message_handler(commands="start")
 async def echoStart(message: types.Message):
@@ -104,8 +107,8 @@ async def echoLogin(message: types.Message):
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
                 card.execute("SELECT * FROM salesforce.expense_card__c;")
                 cardLenDo = len(card.fetchall())
-         #   with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
-         #       card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c) values (%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc)))
+            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
+                card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c) values (%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc)))
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
                 card.execute("SELECT * FROM salesforce.expense_card__c;")
                 cardLenPo = len(card.fetchall())
@@ -116,6 +119,73 @@ async def echoLogin(message: types.Message):
             await message.answer("Ошибка при создании карты!")
             botlog[0] = 0
 
+
+@dp.callback_query_handler(lambda c: c.data == 'button1')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    if botlog[0] == 3:
+        await bot.answer_callback_query(callback_query.id)
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as monthly:
+            monthly.execute(("SELECT * FROM salesforce.monthly_expense__c where keeper__c='{}';").format(userId))
+            global monthlySFID
+            monthlySFID = monthly.fetchone()['sfid']
+            monthly.execute(("SELECT * FROM salesforce.monthly_expense__c where keeper__c='{}';").format(userId))
+            datem = datetime.today().strftime("%Y-%m")
+            for number in monthly.fetchall():
+                if number['month_date__c'].strftime("%Y-%m") == datem:
+                    await bot.send_message(callback_query.from_user.id, 'Ваш баланс составляет: ' + str(number['balance__c']))
+
+@dp.callback_query_handler(lambda c: c.data == 'button2')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    if botlog[0] == 3:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as monthly:
+            monthly.execute(("SELECT * FROM salesforce.monthly_expense__c where keeper__c='{}';").format(userId))
+            global monthlySFID
+            monthlySFID = monthly.fetchone()['sfid']
+        botlog[0] = 4
+        await bot.answer_callback_query(callback_query.id)
+        await bot.send_message(callback_query.from_user.id, 'На какой день желаете создать карточку', reply_markup=inline_kb2)
+       
+
+@dp.callback_query_handler(lambda c: c.data == 'button3')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    if botlog[0] == 4:
+        await bot.answer_callback_query(callback_query.id)
+        global cardData
+        cardData = datetime.now().strftime("%Y-%m-%d")
+        await bot.send_message(callback_query.from_user.id, 'Введите сумму затрат: ')
+        botlog[0] = 5
+
+
+@dp.callback_query_handler(lambda c: c.data == 'button4')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    if botlog[0] == 4:
+        calendar, step = DetailedTelegramCalendar(max_date=datetime.date(datetime.now())).build()
+        await bot.send_message(callback_query.from_user.id, f"Select {LSTEP[step]}", reply_markup=calendar)
+        await bot.answer_callback_query(callback_query.id)
+        botlog[0] = 5
+        #переменная с выбранной датой
+
+@dp.callback_query_handler(lambda c: c.data == 'button5')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    if botlog[0] == 4:
+        await bot.answer_callback_query(callback_query.id)
+        botlog[0] = 3
+        await bot.send_message(callback_query.from_user.id, 'Операция отменена выберете действие',  reply_markup=inline_kb1) 
+
+@dp.callback_query_handler(DetailedTelegramCalendar.func())
+async def cal(callback_query: types.CallbackQuery):
+    result, key, step = DetailedTelegramCalendar(max_date=datetime.date(datetime.now())).process(callback_query.data)
+    if not result and key:
+        await bot.edit_message_text(f"Select {LSTEP[step]}",
+                              callback_query.from_user.id,
+                              callback_query.message.message_id,
+                              reply_markup=key)
+    elif result:
+        await bot.edit_message_text('Введите сумму затрат:',
+                              callback_query.from_user.id,
+                              callback_query.message.message_id)
+        global cardData
+        cardData = f"{result}"
 
 
 async def on_startup(dp):
