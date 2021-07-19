@@ -55,6 +55,28 @@ async def echoLogin(message: types.Message):
                     botlog[1] = 0
         await message.answer("Введите пароль:")
         botlog[0] = 2
+    elif botlog[0] == 2:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as contact:
+            contact.execute(("SELECT * FROM salesforce.contact where password__c='{}';").format(message.text))
+            if len(contact.fetchall()) == 1:
+                if len(botlog) == 2:
+                    botlog.append(1)
+                else:
+                    botlog[2] = 1
+            else:
+                if len(botlog) == 2:
+                    botlog.append(0)
+                else:
+                    botlog[2] = 0
+            if botlog[1] == 1 & botlog[2] == 1:
+                await message.answer("Авторизация прошла успешно!", reply_markup=inline_kb1)
+                botlog[0] = 3
+                global userId
+                contact.execute(("SELECT * FROM salesforce.contact where password__c='{}';").format(message.text))
+                userId = str(contact.fetchone()['sfid'])
+            else:
+                await message.answer("Логин или пароль неверны!")
+                botlog[0] = 0
 
 
 
