@@ -7,18 +7,13 @@ from aiogram.utils.executor import start_webhook
 from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
                           WEBHOOK_URL, WEBHOOK_PATH,
                           WEBAPP_HOST, WEBAPP_PORT)
-import keyboards as kb
-from datetime import datetime
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
-import psycopg2
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
 botlog = []
-userId = ''
-cardAmount = ''
+
 
 @dp.message_handler(commands="start")
 async def echoStart(message: types.Message):
