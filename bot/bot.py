@@ -9,6 +9,7 @@ from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
                           WEBAPP_HOST, WEBAPP_PORT)
 import psycopg2
 import psycopg2.extras
+from keyboards import kb
 
 
 bot = Bot(token=BOT_TOKEN)
