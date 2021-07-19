@@ -8,6 +8,7 @@ from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
                           WEBHOOK_URL, WEBHOOK_PATH,
                           WEBAPP_HOST, WEBAPP_PORT)
 import psycopg2
+import psycopg2.extras
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
