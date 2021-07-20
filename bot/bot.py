@@ -112,15 +112,16 @@ async def echoLogin(message: types.Message):
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
                 card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c, Externalcard__c) values (%s,%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc), str(uuid.uuid4())[:-18]))
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
-                card.execute("SELECT * FROM salesforce.expense_card__c;")
+                temp=card.execute("SELECT * FROM salesforce.expense_card__c;")
                 cardLenPo = len(card.fetchall())
-                print(cardLenPo.fetchone()['sfid'])
-                print(cardLenPo.fetchone()['card_date__c'])
-                print(cardLenPo.fetchone()['cardkeeper__c'])
-                print(cardLenPo.fetchone()['monthlyexpense__c'])
-                print(cardLenPo.fetchone()['amount__c'])
-                print(cardLenPo.fetchone()['description__c'])
-                print(cardLenPo.fetchone()['Externalcard__c'])
+                print(cardLenPo)
+                print(card.fetchone()['sfid'])
+                print(temp.fetchone()['card_date__c'])
+                print(temp.fetchone()['cardkeeper__c'])
+                print(temp.fetchone()['monthlyexpense__c'])
+                print(temp.fetchone()['amount__c'])
+                print(card.fetchone()['description__c'])
+                print(card.fetchone()['Externalcard__c'])
             if cardLenDo < cardLenPo:
                 await message.answer("Карточка создана!")
                 botlog[0] = 0
