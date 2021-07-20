@@ -114,7 +114,13 @@ async def echoLogin(message: types.Message):
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
                 card.execute("SELECT * FROM salesforce.expense_card__c;")
                 cardLenPo = len(card.fetchall())
-                print(cardLenDo)
+                print(cardLenPo.fetchone()['sfid'])
+                print(cardLenPo.fetchone()['card_date__c'])
+                print(cardLenPo.fetchone()['cardkeeper__c'])
+                print(cardLenPo.fetchone()['monthlyexpense__c'])
+                print(cardLenPo.fetchone()['amount__c'])
+                print(cardLenPo.fetchone()['description__c'])
+                print(cardLenPo.fetchone()['Externalcard__c'])
             if cardLenDo < cardLenPo:
                 await message.answer("Карточка создана!")
                 botlog[0] = 0
