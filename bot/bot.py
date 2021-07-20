@@ -110,7 +110,7 @@ async def echoLogin(message: types.Message):
                 cardLenDo = len(card.fetchall())
                 print(cardLenDo)
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
-                card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c, Externalcard__c) values (%s,%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc), str(uuid.uuid4())[:-18]))
+                card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c, Externalcard__c, sfid) values (%s,%s,%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc), str(uuid.uuid4())[:-18], str(uuid.uuid4())[:-18]))
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
                 card.execute("SELECT * FROM salesforce.expense_card__c;")
                 cardLenPo = len(card.fetchall())
