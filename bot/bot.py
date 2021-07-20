@@ -27,7 +27,7 @@ bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
-conn = psycopg2.connect(dbname='dd93h7g3uedrn1', user='soxrigiqvchsmn', password='535a584a9a46fa70752593b7f9ec8a7927c6f377515fbb2f87f0fc52c1bb3fb7', host='ec2-23-20-124-77.compute-1.amazonaws.com')
+conn = psycopg2.connect(dbname='d9r5p9o1lgr4t8', user='gzfkfpxvcxaqyx', password='137496bf35340e913f01f2f83f2765ee11d6e30c709b58c1f2a9873076f9c3ed', host='ec2-52-86-2-228.compute-1.amazonaws.com')
 
 botlog = []
 userId = ''
@@ -110,7 +110,7 @@ async def echoLogin(message: types.Message):
                 cardLenDo = len(card.fetchall())
                 print(cardLenDo)
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
-                card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c, Externalcard__c, sfid,CreatedById,LastModifiedById) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc), str(uuid.uuid4())[:-18], str(uuid.uuid4())[:-18], '00509000006SdNTAA0', '00509000006SdNTAA0'))
+                card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c, Externalcard__c, sfid) values (%s,%s,%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc), str(uuid.uuid4())[:-18], str(uuid.uuid4())[:-18]))
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
                 card.execute("SELECT * FROM salesforce.expense_card__c;")
                 cardLenPo = len(card.fetchall())
