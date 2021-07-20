@@ -9,6 +9,7 @@ from bot.settings import (BOT_TOKEN, HEROKU_APP_NAME,
                           WEBAPP_HOST, WEBAPP_PORT)
 import psycopg2
 import psycopg2.extras
+import uuid
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 
@@ -109,7 +110,7 @@ async def echoLogin(message: types.Message):
                 cardLenDo = len(card.fetchall())
                 print(cardLenDo)
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
-                card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c) values (%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc)))
+                card.execute("INSERT INTO salesforce.expense_card__c (card_date__c, cardkeeper__c, monthlyexpense__c, amount__c, description__c, external_id__c) values (%s,%s,%s,%s,%s,%s)",(str(cardData),str(userId), str(monthlySFID),str(cardAmount),str(cardDisc), uuid.uuid4()))
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as card:
                 card.execute("SELECT * FROM salesforce.expense_card__c;")
                 cardLenPo = len(card.fetchall())
